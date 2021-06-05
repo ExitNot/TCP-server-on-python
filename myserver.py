@@ -78,7 +78,6 @@ def authentication(c):
     f_data = ''
     global buffer
 
-    # Тут мнене нужна оптимизация
     f_data = read_data(c, 'username')
     if f_data == 'SERVER_SYNTAX_ERROR':
         f_back_msg = '301 SYNTAX ERROR\a\b'
@@ -101,11 +100,6 @@ def authentication(c):
         c.sendall(bytes(f_back_msg, 'ascii'))
         sys.stderr.write('server: SERVER_SYNTAX_ERROR\n')
         return False
-    # if len(f_data) < 1:
-    #     back_msg = '300 LOGIN FAILED\a\b'
-    #     c.sendall(bytes(back_msg, 'ascii'))
-    #     sys.stderr.write('server: SERVER_LOGIN_FAILED\n')
-    #     return False
 
     client_key_check = int(f_data)
     client_key_check = (client_key_check - word_hash) % 65536
@@ -218,7 +212,6 @@ def direction_calc(x1, x2, y1, y2):
 # This func. process coordinates queue that contain only 2 elem last and cur position
 def coord_queue(last, cur):
     queue = [last, cur]
-    # print('last :: cur\n' + str(last) + ' :: ' + str(cur))
     return queue
 
 
@@ -238,9 +231,6 @@ while True:
     # Wait for a connection
     sys.stderr.write('\n+=============================================+\nWaiting for a connection\n')
     connection, client_addr = listener.accept()
-    # if connection/listener.fileno() == -1:
-    #     sys.stderr.write('connection from %s\n' % str(client_addr))
-    #     continue
 
     child_pid = os.fork()  # fork returns process id of the child - stored in the parent
     if child_pid != 0:  # we are in the parent thread
@@ -298,14 +288,9 @@ while True:
                         connection.sendall(bytes(back_msg, 'ascii'))
                         sys.stderr.write('server: SERVER_SYNTAX_ERROR\n')
                         break
-                    # if len(data) < 1:
-                    #     sys.stderr.write('Error: 0 msg %s\n' % len(data))
-                    #     break
                     coordinates = coord_queue(coordinates[1], re.findall(r'[+-]?\d+', str(data)))
-                # синтаксический распознаватель тут нужен 
                 # Robot reaches the target area case
                 if j == 0:
-                    # print(str(coordinates))
                     if 2 >= int(str(coordinates[0][0])) >= -2 and 2 >= int(str(coordinates[0][1])) >= -2:
                         if pick_up(connection):
                             sys.stderr.write('SERVER_LOGOUT\n')
