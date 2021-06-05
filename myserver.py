@@ -11,7 +11,6 @@ buffer = ''  # Global buffer oriented for solving problem with merged msg
 
 
 # This function read data ether from recv() method or from global buffer
-# Эта функция может быть улучшена до универсальной
 def read_data(c, flag):
     f_data = ''
     global buffer
